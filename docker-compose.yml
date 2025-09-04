@@ -1,0 +1,24 @@
+services:
+  minio:
+    image: quay.io/minio/minio
+    ports:
+      - "9001:9001"
+      - "9002:9002"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --address ":9001" --console-address ":9002"
+    volumes:
+      - minio-data:/data
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: sh
+    command: -c "/minio-init.sh"
+    volumes:
+      - ./minio-init.sh:/minio-init.sh
+
+volumes:
+  minio-data:

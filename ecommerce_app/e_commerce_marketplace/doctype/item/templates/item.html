@@ -1,0 +1,86 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="row g-5 align-items-center">
+
+                <!-- Gambar Produk -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm">
+                        <img src="{{ doc.image or '/assets/your_app/default.png' }}" class="img-fluid rounded"
+                            alt="{{ doc.item_name }}" style="max-height: 500px; object-fit: cover; width: 100%;">
+                    </div>
+                </div>
+
+                <!-- Detail Produk -->
+                <div class="col-lg-6">
+                    <div class="d-flex flex-column h-100">
+
+                        <!-- Nama Produk -->
+                        <h1 class="fw-bold mb-3 text-dark">
+                            {{ doc.item_name }}
+                        </h1>
+
+                        <!-- Kategori -->
+                        {% if doc.category %}
+                        <div class="mb-4">
+                            <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                {{ doc.category }}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        <!-- Deskripsi -->
+                        {% if doc.description %}
+                        <div class="mb-4">
+                            <p class="fs-5 text-muted lh-lg mb-0">
+                                {{ doc.description }}
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Harga -->
+                        <div class="mb-4">
+                            <h2 class="fw-bold text-primary mb-0">
+                                {{ doc.price }} {{ doc.balance_type }}
+                            </h2>
+                        </div>
+
+                        <!-- Tombol Beli -->
+                        <div class="mt-auto">
+                            <button id="buy-btn" class="btn btn-primary btn-lg w-100 py-3 fw-semibold shadow-sm">
+                                Buy Now
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("buy-btn").addEventListener("click", async () => {
+        try {
+            const response = await fetch(`/api/method/ecommerce_app.e_commerce_marketplace.api.buy_item.buy_item?balance_type={{ doc.balance_type }}&amount={{ doc.price }}&item={{ doc.name }}`);
+            
+            const result = await response.json();
+            
+            if (result.message.success) {
+                alert(`Berhasil membeli ${result.message.item}!`);
+            } else {
+                alert(result.message.message + "\n" + result.message.error);
+            }
+            
+        } catch (err) {
+            console.error("Error:", err);
+            alert("Terjadi kesalahan");
+        }
+    });
+</script>
+
+{% endblock %}

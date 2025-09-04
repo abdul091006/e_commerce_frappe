@@ -137,13 +137,16 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "User": {
+        "after_insert": "ecommerce_app.e_commerce_marketplace.api.create_wallet.create_wallet"
+    },
+    "Item": {
+        "before_save": "ecommerce_app.e_commerce_marketplace.api.minio_upload.save_item_image",
+        "after_save": "ecommerce_app.e_commerce_marketplace.api.minio_upload.after_save_item"
+    }
+}
+
 
 # Scheduled Tasks
 # ---------------
@@ -174,9 +177,10 @@ app_license = "mit"
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "ecommerce_app.event.get_events"
-# }
+override_whitelisted_methods = {
+    "upload_file": "ecommerce_app.e_commerce_marketplace.api.minio_upload.upload_file"
+}
+
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,

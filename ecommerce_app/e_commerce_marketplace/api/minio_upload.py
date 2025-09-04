@@ -58,7 +58,6 @@ def upload_file():
     file_url = generate_presigned_url(f"{bucket}/{filename}")
 
     # Create File record
-    # Ambil doctype dan docname dari request
     attached_to_doctype = frappe.form_dict.get("doctype")
     attached_to_name = frappe.form_dict.get("docname")
 
@@ -73,7 +72,7 @@ def upload_file():
     })
     file_doc.insert(ignore_permissions=True)
 
-    # Kalau Item sudah ada, langsung update image field
+    # if Item exist, update image field
     if attached_to_doctype == "Item" and attached_to_name and "new-" not in attached_to_name:
         item = frappe.get_doc("Item", attached_to_name)
         item.image = file_url

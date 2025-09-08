@@ -19,10 +19,11 @@ def create_wallet(doc, method):
             "user": user_id,
             "wallet_user_id": wallet_user_id,
         })
-        wallet_doc.insert(ignore_permissions=True)
+        wallet_doc.insert()
 
         user = frappe.get_doc("User", user_id)
         user.add_roles("Marketplace User")
+        user.save()
 
     except Exception as e:
         frappe.log_error(f"Create wallet failed for {user_id}: {str(e)}")

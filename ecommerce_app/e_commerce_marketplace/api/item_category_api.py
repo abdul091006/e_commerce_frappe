@@ -1,7 +1,7 @@
 import frappe
 
 # CREATE
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_item_category(category_name, description=None):
     try:
         doc = frappe.get_doc({
@@ -9,7 +9,7 @@ def create_item_category(category_name, description=None):
             "category_name": category_name,
             "description": description
         })
-        doc.insert(ignore_permissions=True)
+        doc.insert()
         frappe.db.commit()
         return {
             "status": "success",
@@ -20,7 +20,7 @@ def create_item_category(category_name, description=None):
         return {"status": "error", "message": str(e)}
 
 # GET BY ID
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_item_category(name):
     try:
         doc = frappe.get_doc("Item Category", name)
@@ -29,7 +29,7 @@ def get_item_category(name):
         return {"status": "error", "message": str(e)}
 
 # GET ALL
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def list_item_categories():
     try:
         docs = frappe.get_all("Item Category", fields=["name", "category_name", "description"])
@@ -38,7 +38,7 @@ def list_item_categories():
         return {"status": "error", "message": str(e)}
 
 # # UPDATE
-# @frappe.whitelist(allow_guest=True)
+# @frappe.whitelist()
 # def update_item_category(name, category_name=None, description=None):
 #     try:
 #         doc = frappe.get_doc("Item Category", name)
@@ -48,7 +48,7 @@ def list_item_categories():
 #         if description is not None:
 #             doc.description = description
 
-#         doc.save(ignore_permissions=True)
+#         doc.save()
 #         frappe.db.commit()
 #         return {
 #             "status": "success",
@@ -59,10 +59,10 @@ def list_item_categories():
 #         return {"status": "error", "message": str(e)}
 
 # DELETE
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def delete_item_category(name):
     try:
-        frappe.delete_doc("Item Category", name, ignore_permissions=True)
+        frappe.delete_doc("Item Category", name, )
         frappe.db.commit()
         return {
             "status": "success",

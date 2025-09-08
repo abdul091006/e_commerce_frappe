@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 
 # CREATE ITEM
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_item(item_name, balance_type, category, price, description=None, image=None):
     try:
         if not frappe.db.exists("Balance Type", balance_type):
@@ -19,7 +19,7 @@ def create_item(item_name, balance_type, category, price, description=None, imag
             "image": image,
             "price": price
         })
-        doc.insert(ignore_permissions=True)
+        doc.insert()
         frappe.db.commit()
 
         return {
@@ -32,7 +32,7 @@ def create_item(item_name, balance_type, category, price, description=None, imag
 
 
 # GET ITEM BY ID
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_item(name):
     try:
         if not frappe.db.exists("Item", name):
@@ -49,7 +49,7 @@ def get_item(name):
 
 
 # GET ITEMS BY ITEM NAME
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_items_by_name(item_name):
     try:
         items = frappe.get_all(
@@ -70,7 +70,7 @@ def get_items_by_name(item_name):
 
 
 # GET ALL ITEMS
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_items():
     try:
         items = frappe.get_all("Item", fields=["name", "item_name", "description", "balance_type", "category", "image", "price"])
@@ -83,7 +83,7 @@ def get_all_items():
 
 
 # UPDATE ITEM
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_item(name, item_name=None, balance_type=None, category_name=None, image=None, price=None):
     try:
         if not frappe.db.exists("Item", name):
@@ -110,7 +110,7 @@ def update_item(name, item_name=None, balance_type=None, category_name=None, ima
         if price is not None: 
             doc.price = price
 
-        doc.save(ignore_permissions=True)
+        doc.save()
         frappe.db.commit()
 
         return {
@@ -123,13 +123,13 @@ def update_item(name, item_name=None, balance_type=None, category_name=None, ima
 
 
 # DELETE ITEM
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def delete_item(name):
     try:
         if not frappe.db.exists("Item", name):
             return {"status": "error", "message": f"Item '{name}' not found"}
 
-        frappe.delete_doc("Item", name, ignore_permissions=True)
+        frappe.delete_doc("Item", name, )
         frappe.db.commit()
 
         return {

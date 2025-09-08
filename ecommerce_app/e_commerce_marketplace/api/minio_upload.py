@@ -70,13 +70,13 @@ def upload_file():
         "attached_to_doctype": attached_to_doctype if attached_to_name and "new-" not in attached_to_name else None,
         "attached_to_name": attached_to_name if attached_to_name and "new-" not in attached_to_name else None
     })
-    file_doc.insert(ignore_permissions=True)
+    file_doc.insert()
 
     # if Item exist, update image field
     if attached_to_doctype == "Item" and attached_to_name and "new-" not in attached_to_name:
         item = frappe.get_doc("Item", attached_to_name)
         item.image = file_url
-        item.save(ignore_permissions=True)
+        item.save()
 
     return {
         "name": file_doc.name,
@@ -126,7 +126,7 @@ def save_item_image(doc, method):
             "attached_to_doctype": "Item",
             "attached_to_name": doc.name
         })
-        file_doc.insert(ignore_permissions=True)
+        file_doc.insert()
 
         # Update Item image field
         doc.image = file_url

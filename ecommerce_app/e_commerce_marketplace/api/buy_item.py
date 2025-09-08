@@ -43,7 +43,7 @@ def buy_item(balance_type, amount, item):
         "balance_type": balance_type,
         "status": "Success" if data.get("success") else "Failed",
     })
-    tx.insert(ignore_permissions=True)
+    tx.insert()
     frappe.db.commit()
 
     return {

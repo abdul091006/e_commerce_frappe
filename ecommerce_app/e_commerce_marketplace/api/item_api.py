@@ -71,12 +71,31 @@ def get_items_by_name(item_name):
 
 # GET ALL ITEMS
 @frappe.whitelist()
-def get_all_items():
+def get_all_items(category=None, page=1, limit=10):
     try:
-        items = frappe.get_all("Item", fields=["name", "item_name", "description", "balance_type", "category", "image", "price"])
+        filters = {}
+        if category:
+            filters["category"] = category
+
+        offset = (int(page) - 1) * int(limit)
+
+        total_items = frappe.db.count("Item", filters=filters)
+
+        items = frappe.get_all(
+            "Item",
+            filters=filters,
+            fields=["name", "item_name", "description", "balance_type", "category", "image", "price"],
+            limit_start=offset,
+            limit_page_length=limit,
+        )
+
         return {
             "status": "success",
-            "data": items
+            "page": int(page),
+            "limit": int(limit),
+            "total_items": total_items,
+            "total_pages": (total_items + int(limit) - 1) // int(limit),
+            "data": items,
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}

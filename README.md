@@ -91,7 +91,7 @@ DELETE /api/method/ecommerce_app.e_commerce_marketplace.api.balance_type_api.del
 
 #### Create Item Category
 ```http
-POST /api/method/ecommerce_app.e_commerce_marketplace.api.item_category_api.create_item_category?category_name=Electronics&description=Produk elektronik
+POST /api/method/ecommerce_app.e_commerce_marketplace.api.item_category_api.create_item_category?category_name=Electronics
 ```
 
 #### Get Item Category
@@ -150,7 +150,6 @@ POST /api/method/ecommerce_app.e_commerce_marketplace.api.buy_item.buy_item?bala
 
 ### 2. Item Category  
 - `category_name`: Category name
-- `description`: Category description (optional)
 
 ### 3. Item
 - `item_name`: Item name

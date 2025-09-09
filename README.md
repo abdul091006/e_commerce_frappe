@@ -128,7 +128,7 @@ GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_items_by_n
 
 #### Get All Items
 ```http
-GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_all_items
+GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_all_items?page=1&limit=2&category=Electronics
 ```
 
 #### Delete Item

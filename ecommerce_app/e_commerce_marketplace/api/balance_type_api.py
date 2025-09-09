@@ -1,5 +1,9 @@
 import frappe
 
+def sanitize_doc(doc_dict):
+    exclude_fields = ["owner", "creation", "modified", "modified_by", "docstatus", "idx", "doctype"]
+    return {k: v for k, v in doc_dict.items() if k not in exclude_fields}
+
 # CREATE
 @frappe.whitelist()
 def create_balance_type(type_name):
@@ -13,7 +17,7 @@ def create_balance_type(type_name):
         return {
             "status": "success",
             "message": "Balance Type created successfully",
-            "data": doc.as_dict()
+            "data": sanitize_doc(doc.as_dict())
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
@@ -25,7 +29,7 @@ def get_balance_type(name):
         doc = frappe.get_doc("Balance Type", name)
         return {
             "status": "success",
-            "data": doc.as_dict()
+            "data": sanitize_doc(doc.as_dict())
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
@@ -39,7 +43,7 @@ def list_balance_types():
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-# # UPDATE
+# UPDATE (optional kalau mau aktifkan lagi)
 # @frappe.whitelist()
 # def update_balance_type(name, type_name):
 #     try:
@@ -51,7 +55,7 @@ def list_balance_types():
 #         return {
 #             "status": "success",
 #             "message": "Balance Type updated successfully",
-#             "data": doc.as_dict()
+#             "data": sanitize_doc(doc.as_dict())
 #         }
 #     except Exception as e:
 #         return {"status": "error", "message": str(e)}
@@ -60,7 +64,7 @@ def list_balance_types():
 @frappe.whitelist()
 def delete_balance_type(name):
     try:
-        frappe.delete_doc("Balance Type", name, )
+        frappe.delete_doc("Balance Type", name)
         frappe.db.commit()
         return {
             "status": "success",

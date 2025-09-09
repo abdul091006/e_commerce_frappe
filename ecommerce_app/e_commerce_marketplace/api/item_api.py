@@ -56,17 +56,17 @@ def search_items(keyword, page=1, limit=10):
         limit = max(int(limit), 1) 
         offset = (page - 1) * limit
 
-        conditions = [
-            ["item_name", "like", f"%{keyword}%"],
-            "or",
-            ["description", "like", f"%{keyword}%"]
-        ]
+        or_filters = {
+            "item_name": ["like", f"%{keyword}%"],
+            "description": ["like", f"%{keyword}%"]
+        }
 
-        total_items = frappe.db.count("Item", filters=conditions)
+        # ambil semua hasil dulu, lalu hitung total
+        total_items = len(frappe.get_all("Item", or_filters=or_filters))
 
         items = frappe.get_all(
             "Item",
-            filters=conditions,
+            or_filters=or_filters,
             fields=["name", "item_name", "description", "balance_type", "category", "image", "price"],
             limit_start=offset,
             limit_page_length=limit,
@@ -91,7 +91,7 @@ def search_items(keyword, page=1, limit=10):
 
 # GET ALL ITEMS
 @frappe.whitelist()
-def get_all_items(category=None, page=1, limit=10):
+def get_all_items(category=None, balance_type=None, page=1, limit=10):
     try:
         page = max(int(page), 1)
         limit = max(int(limit), 1)
@@ -100,6 +100,8 @@ def get_all_items(category=None, page=1, limit=10):
         filters = {}
         if category:
             filters["category"] = category
+        if balance_type:
+            filters["balance_type"] = balance_type
 
         total_items = frappe.db.count("Item", filters=filters)
 
@@ -116,6 +118,7 @@ def get_all_items(category=None, page=1, limit=10):
         return {
             "status": "success",
             "category": category,
+            "balance_type": balance_type,
             "page": page,
             "limit": limit,
             "total_items": total_items,

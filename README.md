@@ -128,7 +128,7 @@ GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.search_items?k
 
 #### Get All Items
 ```http
-GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_all_items?page=1&limit=10&category=Electronics
+GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_all_items?page=1&limit=10&category=Electronics&balance_type=Coins
 ```
 
 #### Delete Item

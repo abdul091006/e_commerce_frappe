@@ -121,14 +121,14 @@ POST /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.create_item?i
 GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_item?name=HP-38
 ```
 
-#### Get Items by Name
+#### Search Items
 ```http
-GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_items_by_name?item_name=HP
+GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.search_items?keyword=HP&page=1&limit=10
 ```
 
 #### Get All Items
 ```http
-GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_all_items?page=1&limit=2&category=Electronics
+GET /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.get_all_items?page=1&limit=10&category=Electronics
 ```
 
 #### Delete Item
@@ -141,6 +141,16 @@ DELETE /api/method/ecommerce_app.e_commerce_marketplace.api.item_api.delete_item
 #### Buy Item
 ```http
 POST /api/method/ecommerce_app.e_commerce_marketplace.api.buy_item.buy_item?balance_type=Coins&amount=500.5&item=HP-38
+```
+
+#### Get All Purchased Items
+```http
+GET /api/method/ecommerce_app.e_commerce_marketplace.api.transaction_api.get_purchased_items?page=1&limit=10
+```
+
+#### Get Purchased Item Detail
+```http
+GET /api/method/ecommerce_app.e_commerce_marketplace.api.transaction_api.get_purchased_item_detail?transaction_id=TXN-0001
 ```
 
 ## 🗂️ DocTypes
@@ -162,6 +172,14 @@ POST /api/method/ecommerce_app.e_commerce_marketplace.api.buy_item.buy_item?bala
 ### 4. Player Wallet Mapping
 - `user`: Link to User
 - `wallet_user_id`: Wallet ID from Golang service
+
+### 5. Marketplace Transaction
+* `user`: Link to User
+* `item`: Link to Item
+* `amount`: Transaction amount
+* `balance_type`: Balance type used
+* `status`: Transaction status (`Success` / `Failed`)
+* `creation`: Timestamp of transaction
 
 ## 🔄 Integration Flow
 

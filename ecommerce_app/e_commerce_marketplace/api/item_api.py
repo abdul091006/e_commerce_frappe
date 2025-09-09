@@ -48,22 +48,42 @@ def get_item(name):
         return {"status": "error", "message": str(e)}
 
 
-# GET ITEMS BY ITEM NAME
+# SEARCH ITEMS 
 @frappe.whitelist()
-def get_items_by_name(item_name):
+def search_items(keyword, page=1, limit=10):
     try:
+        page = max(int(page), 1)   
+        limit = max(int(limit), 1) 
+        offset = (page - 1) * limit
+
+        conditions = [
+            ["item_name", "like", f"%{keyword}%"],
+            "or",
+            ["description", "like", f"%{keyword}%"]
+        ]
+
+        total_items = frappe.db.count("Item", filters=conditions)
+
         items = frappe.get_all(
             "Item",
-            filters={"item_name": item_name},
-            fields=["name", "item_name", "description", "balance_type", "category", "image", "price"]
+            filters=conditions,
+            fields=["name", "item_name", "description", "balance_type", "category", "image", "price"],
+            limit_start=offset,
+            limit_page_length=limit,
         )
 
-        if not items:
-            return {"status": "error", "message": f"No items found with name '{item_name}'"}
+        total_pages = (total_items + limit - 1) // limit
 
         return {
             "status": "success",
-            "data": items
+            "keyword": keyword,
+            "page": page,
+            "limit": limit,
+            "total_items": total_items,
+            "total_pages": total_pages,
+            "has_next": page < total_pages,
+            "has_prev": page > 1,
+            "data": items,
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
@@ -73,11 +93,13 @@ def get_items_by_name(item_name):
 @frappe.whitelist()
 def get_all_items(category=None, page=1, limit=10):
     try:
+        page = max(int(page), 1)
+        limit = max(int(limit), 1)
+        offset = (page - 1) * limit
+
         filters = {}
         if category:
             filters["category"] = category
-
-        offset = (int(page) - 1) * int(limit)
 
         total_items = frappe.db.count("Item", filters=filters)
 
@@ -89,12 +111,17 @@ def get_all_items(category=None, page=1, limit=10):
             limit_page_length=limit,
         )
 
+        total_pages = (total_items + limit - 1) // limit
+
         return {
             "status": "success",
-            "page": int(page),
-            "limit": int(limit),
+            "category": category,
+            "page": page,
+            "limit": limit,
             "total_items": total_items,
-            "total_pages": (total_items + int(limit) - 1) // int(limit),
+            "total_pages": total_pages,
+            "has_next": page < total_pages,
+            "has_prev": page > 1,
             "data": items,
         }
     except Exception as e:

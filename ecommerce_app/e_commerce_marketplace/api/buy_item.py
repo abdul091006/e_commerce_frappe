@@ -8,7 +8,6 @@ def buy_item(balance_type, amount, item):
     if current_user == "Guest":
         frappe.throw("Must be logged in")
 
-    # wallet_user_id
     mapping = frappe.get_value(
         "Player Wallet Mapping",
         {"user": current_user},
@@ -34,6 +33,7 @@ def buy_item(balance_type, amount, item):
     else:
         data = res.json()
 
+    status = "Success" if data.get("success") else "Failed"
 
     tx = frappe.get_doc({
         "doctype": "Marketplace Transaction",
@@ -41,18 +41,22 @@ def buy_item(balance_type, amount, item):
         "item": item,
         "amount": amount,
         "balance_type": balance_type,
-        "status": "Success" if data.get("success") else "Failed",
+        "status": status,
     })
     tx.insert()
     frappe.db.commit()
 
-    return {
+    response = {
         "success": data.get("success", False),
         "message": data.get("message", "Terjadi kesalahan saat order"),
-        "error": data.get("error", "Terjadi kesalahan saat order"),
         "item": item,
         "amount": amount,
         "balance_type": balance_type,
+        "status": status,
         "wallet_response": data
     }
 
+    if not data.get("success"):
+        response["error"] = data.get("error", "Terjadi kesalahan saat order")
+
+    return {"data": response}
